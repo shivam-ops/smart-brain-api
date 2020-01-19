@@ -1,29 +1,21 @@
 const express = require('express');
 const bcrypt = require('bcrypt-nodejs');
 const cors = require('cors')
-const { Client } = require('pg');
+const knex = require('knex');
 const register = require('./controllers/register');
 const signin = require('./controllers/signin');
 const profile = require('./controllers/profile');
 const image = require('./controllers/image');
 
 
+const db = knex({
+    client: 'pg',
+    connection: {
+      connectionString : process.env.DATABASE_URL,
+      ssl: true
+    }
+  });
 
-
-const db = new Client({
-  connectionString: process.env.DATABASE_URL,
-  ssl: true,
-});
-
-db.connect();
-
-db.query('SELECT table_schema,table_name FROM information_schema.tables;', (err, res) => {
-  if (err) throw err;
-  for (let row of res.rows) {
-    console.log(JSON.stringify(row));
-  }
-  db.end();
-});
 
 
 const app = express();
